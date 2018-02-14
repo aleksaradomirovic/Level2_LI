@@ -1,6 +1,11 @@
 /GameObject.class
 /GamePanel.class
 /LeagueInvaders.class
-/Rocketship.class
 /ObjectManager.class
 /Projectile.class
+/Rocketship.class
+/Alien.class
+/alien.png
+/bullet.png
+/rocket.png
+/space.png

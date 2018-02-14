@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -16,6 +19,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	int currentState = 0;
 	Font titleFont;
 	Font generalFont;
+	public static BufferedImage alienImg, rocketImg, bulletImg, space;
 	// TODO make sure this appears
 	Rocketship rocket = new Rocketship(250,700,50,50);
 	ObjectManager obj = new ObjectManager(rocket);
@@ -25,6 +29,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	}
 	void updateGame() {
 		obj.update();
+		obj.manageEnemies();
+		obj.checkCollision();
+		obj.purgeObjects();
+		if(!rocket.isAlive) {
+			currentState = END_STATE;
+		}
 	}
 	void updateEnd() {
 		
@@ -43,8 +53,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.drawString("SPACE for Instructions", 100, 600);
 	}
 	void drawGame(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.fillRect(0,0,LeagueInvaders.w,LeagueInvaders.h);
+		g.drawImage(GamePanel.space, 0, 0, LeagueInvaders.w, LeagueInvaders.h, null);
 		obj.draw(g);
 	}
 	void drawEnd(Graphics g) {
@@ -53,13 +62,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		
 		g.setColor(Color.BLACK);
 		g.setFont(titleFont);
-		g.drawString("GAME OVER", 100, 400);
+		g.drawString("GAME OVER: " + obj.score, 100, 400);
 	}
 	
 	public GamePanel() {
 		cap = new Timer(1000/60, this);
 		titleFont = new Font("Arial",Font.PLAIN,48);
 		generalFont = new Font("Arial",Font.PLAIN,24);
+		try {
+			alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+			rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+			space = ImageIO.read(this.getClass().getResourceAsStream("space.png"));
+		} catch(IOException e) {
+			// TODO Catch Block
+			e.printStackTrace();
+		}
 	}
 	
 	void startGame() {
@@ -103,6 +121,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 				currentState++;
 			} else {
 				currentState = MENU_STATE;
+				rocket = new Rocketship(250, 700, 50, 50);
+				obj = new ObjectManager(rocket);
 			}
 		}
 		rocket.keyPressed(e);

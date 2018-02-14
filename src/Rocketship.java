@@ -5,17 +5,27 @@ import java.awt.event.KeyListener;
 
 public class Rocketship extends GameObject implements KeyListener{
 	
-	int speed;
+	final int speed;
 	boolean up, down, left, right;
 	public Rocketship(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		speed = 5;
+		speed = 10;
 	}
 	void update() {
+		if(up) {
+			y-=speed;
+		} if(down) {
+			y+=speed;
+		} if(left) {
+			x-=speed;
+		} if(right) {
+			x+=speed;
+		}
+		super.update();
 	}
 	void draw(Graphics g) {
-		g.setColor(Color.BLUE);
-		g.fillRect(x, y, w, h);
+		g.drawImage(GamePanel.rocketImg, x, y, w, h, null);
+		up = false; down = false; left = false; right = false;
 	}
 	
 	
@@ -29,18 +39,17 @@ public class Rocketship extends GameObject implements KeyListener{
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getKeyCode() == KeyEvent.VK_UP) {
-			y -= speed;
+			up = true;
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-			y += speed;
+			down = true;
 		} else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-			x -= speed;
+			left = true;
 		} else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			x += speed;
+			right = true;
 		}
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 }
